@@ -4,7 +4,7 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
-   flunk "Moview not created" unless  Movie.create!(movie)
+    flunk "Moview not created" unless  Movie.create!(movie)
   end
 end
 
@@ -14,6 +14,7 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.content  is the entire content of the page as a string.
+  #  page.body
   flunk "Unimplemented"
 end
 
@@ -25,4 +26,70 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  rating_list.split(',').each do |rating|
+    clean_rating = rating.strip
+    if uncheck == nil
+      When %{I check "ratings_#{clean_rating}"}
+    else
+      When %{I uncheck "ratings_#{clean_rating}"}
+    end
+  end 
+end
+
+When /I (un)?check all the ratings/ do |uncheck|
+ 
+  Movie.all_ratings.each do |rating|
+
+    if uncheck == nil
+      When %{I check "ratings_#{rating}"}
+    else
+      When %{I uncheck "ratings_#{rating}"}
+    end
+  end
+
+end
+
+When /I (un)?check ratings that are not: (.*)/ do |uncheck, rating_list|
+  clean_list = rating_list.gsub(/\s+/,'')
+  ignore_list = clean_list.split(',')
+
+  Movie.all_ratings.each do |rating|
+
+    unless ignore_list.include?(rating)
+      if uncheck == nil
+        When %{I check "ratings_#{rating}"}
+      else
+        When %{I uncheck "ratings_#{rating}"}
+      end      
+    end
+  end
+end
+
+# Check all of the movies
+Then /I should see all of the movies/ do
+  Movie.all.each do |movie|
+    flunk %{Movie Not Found - #{movie.title}} unless page.body.include? %{<td>#{movie.title}</td>}
+  end
+end
+
+Then /I should see movies with ratings of: (.*)/ do |rating_list|
+  clean_list = rating_list.gsub(/\s+/,'')
+  split_ratings = clean_list.split(',')
+
+  Movie.find_all_by_rating(split_ratings).each do |movie|
+    flunk %{Movie Not Found - #{movie.title}} unless page.body.include? %{<td>#{movie.title}</td>}
+  end
+end
+
+
+Then /I should not see movies with ratings that are not: (.*)/ do |rating_list|
+
+  clean_list = rating_list.gsub(/\s+/,'')
+  good_ratings_list = clean_list.split(',')
+
+  Movie.all.each do |movie|
+    unless good_ratings_list.include?(movie.rating)
+      flunk %{Movie Should not be Found - #{movie.title}} if page.body.include? %{<td>#{movie.title}</td>}
+    end
+  end
 end
