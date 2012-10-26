@@ -20,12 +20,43 @@ Background: movies have been added to database
   | Chicken Run             | G      | 21-Jun-2000  |
 
   And I am on the RottenPotatoes home page
+  And I check all the ratings
+  And I press "Refresh"
 
 Scenario: sort movies alphabetically
   When I follow "Movie Title"
-  # your steps here
+#  Then I should see "2001: A Space Odyssey" before "Aladdin"
+  Then I should see "Aladdin" before "Amelie"
+  Then I should see "Amelie" before "Chicken Run"
+  Then I should see "Chicken Run" before "Chocolat"
+  Then I should see "Chocolat" before "Raiders of the Lost Ark"
+  Then I should see "Raiders of the Lost Ark" before "The Help"
+  Then I should see "The Help" before "The Incredibles"
+  Then I should see "The Incredibles" before "The Terminator"
+  Then I should see "The Terminator" before "When Harry Met Sally"
+
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
-  # your steps here
+  Then I should see "2001: A Space Odyssey" before "Raiders of the Lost Ark"
+  Then I should see "Raiders of the Lost Ark" before "The Terminator"
+  Then I should see "The Terminator" before "When Harry Met Sally"
+  Then I should see "When Harry Met Sally" before "Aladdin"
+  Then I should see "Aladdin" before "Chicken Run"
+  Then I should see "Chicken Run" before "Chocolat"
+  Then I should see "Chocolat" before "Amelie"
+  Then I should see "Amelie" before "The Incredibles"
+  Then I should see "The Incredibles" before "The Help"
+
+# Then I should see "6-Apr-1968" before "12-Jun-1981"
+# Then I should see "12-Jun-1981" before "26-Oct-1984"
+# Then I should see "26-Oct-1984" before "21-Jul-1989"
+# Then I should see "21-Jul-1989" before "25-Nov-1992"
+# Then I should see "25-Nov-1992" before "21-Jun-2000"
+# Then I should see "21-Jun-2000" before "5-Jan-2001"
+# Then I should see "5-Jan-2001" before "25-Apr-2001"
+# Then I should see "25-Apr-2001" before "5-Nov-2004"
+# Then I should see "5-Nov-2004" before "10-Aug-2011"
+# Then I should see "10-Aug-2011" before "10-Aug-2011"
+
 

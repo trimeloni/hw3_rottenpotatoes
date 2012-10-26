@@ -15,7 +15,14 @@ Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.content  is the entire content of the page as a string.
   #  page.body
-  flunk "Unimplemented"
+
+#flunk %{Wrong Order for #{e1} and #{e2} } unless page.body =~ /#{e1}.*#{e2}/
+#  flunk %{Wrong Order for #{e1} and #{e2} } unless page.body =~ /.*e1.*e2.*/
+  position_e1 = page.body.index(e1)
+  position_e2 = page.body.index(e2)
+
+  flunk %{Wrong Order for #{e1} and #{e2} } unless position_e1 < position_e2
+
 end
 
 # Make it easier to express checking or unchecking several boxes at once
